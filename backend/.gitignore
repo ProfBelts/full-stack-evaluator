@@ -29,4 +29,4 @@ appsettings.json
 # dotnet tools
 **/.store/
 **/.tools/
-**/.package/
+**/.package/backend/appsettings.json

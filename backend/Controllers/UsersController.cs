@@ -8,7 +8,7 @@ using BCrypt.Net;
 
 namespace TaskManager.Controllers
 {
-    [Route("users")]
+    [Route("api/users")]
     [ApiController]
     public class UsersController : ControllerBase
     {

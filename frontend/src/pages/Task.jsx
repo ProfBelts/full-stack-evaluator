@@ -26,7 +26,7 @@ function Tasks() {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const res = await api.get("/tasks");
+      const res = await api.get(`/tasks/user/${user.id}`);
       setTasks(res.data);
     } catch (err) {
       console.error(err);

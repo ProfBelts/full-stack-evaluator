@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function Tasks() {
+  const navigate = useNavigate(); 
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
   const [isDone, setIsDone] = useState(false);

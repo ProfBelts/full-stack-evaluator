@@ -5,8 +5,8 @@ using TaskManager.Models;
 
 namespace TaskManager.Controllers
 {
+    [Route("users")]
     [ApiController]
-    [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -22,6 +22,19 @@ namespace TaskManager.Controllers
             var users = await _context.Users.Include(u => u.Tasks).ToListAsync();
             return Ok(users);
         }
+
+        // GET: api/users/1
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUser(int id)
+        {
+            var user = await _context.Users.Include(u => u.Tasks)
+                                           .FirstOrDefaultAsync(u => u.Id == id);
+            if (user == null) return NotFound();
+            return Ok(user);
+        }
+
+
+
 
     }
 

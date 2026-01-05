@@ -1,13 +1,21 @@
 import { useState } from "react";
+import api from "../api/axios";
 
 function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Register", { email, password });
-  };
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await api.post("/users", { email, password });
+    console.log(res.data);
+    alert("Registration successful!");
+  } catch (err) {
+    console.error(err);
+    alert(err.response?.data?.message || "Registration failed");
+  }
+};
 
   return (
     <div className="container mt-5">

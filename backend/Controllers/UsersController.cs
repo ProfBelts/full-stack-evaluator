@@ -40,14 +40,31 @@ namespace TaskManager.Controllers
         }
 
         // GET: api/users/1
-        [HttpGet("{id}")]
+       [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
-            var user = await _context.Users.Include(u => u.Tasks)
-                                           .FirstOrDefaultAsync(u => u.Id == id);
-            if (user == null) return NotFound();
-            return Ok(user);
+            var user = await _context.Users
+                .Include(u => u.Tasks)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user == null)
+                return NotFound();
+
+            var userDto = new UserResponseDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Tasks = user.Tasks.Select(t => new TaskResponseDtoForUser
+                {
+                    Id = t.Id,
+                    Title = t.Title,
+                    IsDone = t.IsDone
+                }).ToList()
+            };
+
+            return Ok(userDto);
         }
+
 
          // POST: api/users
          // Use DTO to transfer only necessary field for creating the users payload.

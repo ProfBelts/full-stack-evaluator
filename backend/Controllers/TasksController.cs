@@ -38,7 +38,27 @@ namespace TaskManager.API
             return Ok(taskDto);
         }
 
+        // GET /api/tasks/user/1
+        // Only get task by specific user
+       [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetTasksByUser(int userId)
+        {
+            var tasks = await _context.Tasks
+                .Where(t => t.UserId == userId)
+                .Include(t => t.User)
+                .ToListAsync();
 
+            var taskDtos = tasks.Select(t => new TaskResponseDto
+            {
+                Id = t.Id,
+                Title = t.Title,
+                IsDone = t.IsDone,
+                UserId = t.UserId,
+                UserEmail = t.User?.Email
+            }).ToList();
+
+            return Ok(taskDtos);
+        }
 
         // POST /api/tasks
         [HttpPost]

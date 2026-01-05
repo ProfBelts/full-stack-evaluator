@@ -41,6 +41,8 @@ function Tasks() {
   // Create or Update task
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!user) return; 
+
     setLoading(true);
 
     try {

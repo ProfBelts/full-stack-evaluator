@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Data;
 using TaskManager.Models;
+using TaskManager.DTOs;
+using BCrypt.Net;
+
 
 namespace TaskManager.Controllers
 {
@@ -34,11 +37,21 @@ namespace TaskManager.Controllers
         }
 
          // POST: api/users
+         // Use DTO to transfer only necessary field for creating the users payload.
         [HttpPost]
-        public async Task<IActionResult> CreateUser(User user)
+        public async Task<IActionResult> CreateUser([FromBody] UserCreateDto dto)
         {
+            // Hash the password before saving
+            var user = new User
+            {
+                Email = dto.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password) // hashed
+            };
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+
+            // Return 201 Created, with the new user
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
         }
     }

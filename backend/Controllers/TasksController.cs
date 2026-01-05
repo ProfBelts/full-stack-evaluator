@@ -102,5 +102,22 @@ namespace TaskManager.API
             return Ok(response);
         }
 
+        // DELETE /tasks/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTask(int id)
+        {
+            var task = await _context.Tasks.FindAsync(id);
+            if (task == null)
+            {
+                // Return 404 if not found
+                return NotFound(new { message = "Task not found" });
+            }
+            _context.Tasks.Remove(task);
+            await _context.SaveChangesAsync();
+
+            // Return 204 No Content
+            return NoContent();
+        }
+
     }
 }

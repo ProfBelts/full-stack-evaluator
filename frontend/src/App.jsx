@@ -1,13 +1,19 @@
 import './App.css'
-import Tasks from "./Tasks"
+import { Routes, Route, Navigate } from "react-router-dom"
+
+import Register from "./pages/Register"
 
 function App() {
   return (
     <div className="app">
-      <h1>📝 React Task Evaluator</h1>
-      <Tasks />
+   
+      <Routes>
+
+        <Route path="/register" element={<Register />} />
+        
+      </Routes>
     </div>
   );
 }
 
-export default App
+export default App;

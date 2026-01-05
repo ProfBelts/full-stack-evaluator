@@ -1,21 +1,35 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"; // <-- import toast
+import "react-toastify/dist/ReactToastify.css"; // <-- import CSS
 import api from "../api/axios";
 
 function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await api.post("/users", { email, password });
-    console.log(res.data);
-    alert("Registration successful!");
-  } catch (err) {
-    console.error(err);
-    alert(err.response?.data?.message || "Registration failed");
-  }
-};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await api.post("/users", { email, password });
+      console.log(res.data);
+      
+      // Show success toast
+      toast.success("Registration successful!", {
+        position: "top-right",
+        autoClose: 2000, // 2 seconds
+        onClose: () => navigate("/login"), // redirect after toast closes
+      });
+
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Registration failed", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
+  };
 
   return (
     <div className="container mt-5">

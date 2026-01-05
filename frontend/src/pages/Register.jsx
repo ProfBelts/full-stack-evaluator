@@ -1,55 +1,60 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
 
 function Register() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
-
-    try {
-      await api.post("/auth/register", {
-        email,
-        password
-      });
-
-      navigate("/login");
-    } catch (err) {
-      setError("Registration failed");
-    }
+    console.log("Register", { email, password });
+    // You can call your API here
   };
 
   return (
-    <div>
-      <h2>Register</h2>
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-5">
+          <div className="text-center mb-4">
+            <h1>📝 Task Evaluator</h1>
+            <p>Create your account</p>
+          </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+          <div className="card p-4 shadow-sm">
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label className="form-label">Email</label>
+                <input 
+                  type="email" 
+                  className="form-control" 
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+              <div className="mb-3">
+                <label className="form-label">Password</label>
+                <input 
+                  type="password" 
+                  className="form-control" 
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <button type="submit">Register</button>
-      </form>
-
-      <p onClick={() => navigate("/login")} style={{ cursor: "pointer" }}>
-        Back to login
-      </p>
+              <button type="submit" className="btn btn-primary w-100">
+                Register
+              </button>
+            </form>
+            <p className="mt-3 text-center">
+              Already have an account? <a href="/login">Login</a>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

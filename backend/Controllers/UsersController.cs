@@ -75,8 +75,25 @@ namespace TaskManager.Controllers
             return NoContent();
         }
 
+        [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUser(int id, [FromBody] UserUpdateDto dto)
+    {
+        var user = await _context.Users.FindAsync(id);
+        if (user == null)
+            return NotFound(new { message = $"User with id {id} not found." });
 
+        // Update fields if provided
+        if (!string.IsNullOrEmpty(dto.Email))
+            user.Email = dto.Email;
 
+        if (!string.IsNullOrEmpty(dto.Password))
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+
+        await _context.SaveChangesAsync();
+
+        // Return updated user (or a DTO without password hash)
+        return Ok(user);
     }
 
+    }
 }

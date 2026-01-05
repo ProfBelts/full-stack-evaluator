@@ -10,6 +10,15 @@ function Tasks() {
   const [editingTask, setEditingTask] = useState(null);
   const user = JSON.parse(localStorage.getItem("user")); // { id, email }
 
+  useEffect(() => {
+    if (!user) {
+      // Not logged in → redirect
+      toast.info("Please login first");
+      navigate("/login");
+      return;
+    }
+    fetchTasks();
+  }, []);
 
   // Fetch tasks on page load
   const fetchTasks = async () => {

@@ -41,5 +41,22 @@ namespace TaskManager.Controllers
             });
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(UserLoginDto dto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+            if (user == null)
+                return Unauthorized(new { message = "Invalid credentials" });
+
+            if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+                return Unauthorized(new { message = "Invalid credentials" });
+
+            return Ok(new UserResponseDto
+            {
+                Id = user.Id,
+                Email = user.Email
+            });
+        }
+
     }
 }

@@ -54,6 +54,29 @@ namespace TaskManager.Controllers
             // Return 201 Created, with the new user
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
         }
+
+        // DELETE /api/users/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            // Find the user by id
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound(new { message = $"User with id {id} not found." });
+            }
+
+            // Remove the user
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            // Return 204 No Content (standard for successful deletes)
+            return NoContent();
+        }
+
+
+
     }
 
 }

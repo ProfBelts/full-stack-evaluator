@@ -1,12 +1,13 @@
 import { useState } from "react";
 
-function Register() {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Register", { email, password });
+    console.log("Login", { email, password });
+    // Call your API here to login
   };
 
   return (
@@ -15,7 +16,7 @@ function Register() {
         <div className="col-md-5">
           <div className="text-center mb-4">
             <h1>📝 Task Evaluator</h1>
-            <p>Create your account</p>
+            <p>Login to your account</p>
           </div>
 
           <div className="card p-4 shadow-sm">
@@ -45,11 +46,11 @@ function Register() {
               </div>
 
               <button type="submit" className="btn btn-primary w-100">
-                Register
+                Login
               </button>
             </form>
             <p className="mt-3 text-center">
-              Already have an account? <a href="/login">Login</a>
+              Don't have an account? <a href="/register">Register</a>
             </p>
           </div>
         </div>
@@ -58,4 +59,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Login;

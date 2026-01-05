@@ -1,46 +1,47 @@
-# ─── GLOBAL GITIGNORE FOR FULL-STACK MONOREPO ───
+# =========================
+# Backend (.NET 9) ignores
+# =========================
 
-# === Node.js / React ===
-node_modules/
-.env
-.env.*.local
-dist/
-build/
-.vite/
-.cache/
-coverage/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Build output
+backend/bin/
+backend/obj/
 
-# === .NET / C# ===
-bin/
-obj/
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-.vscode/
-*.ncrunch*
-_ReSharper*/
-*.vs/
-*.dbmdl
-*.dbproj.schemaview
-*.pdb
+# User secrets / sensitive files
+backend/appsettings.json
+backend/*.user
+backend/*.vs/
+backend/*.suo
 
-# === macOS / Linux / Windows system junk ===
+# Visual Studio
+*.userprefs
+
+# =========================
+# Frontend (Node/Vite) ignores
+# =========================
+
+# Node modules
+frontend/node_modules/
+
+# Build output
+frontend/dist/
+frontend/.vite/
+
+# Optional lock file updates 
+# frontend/package-lock.json
+
+# Logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# =========================
+# OS / Editor ignores
+# =========================
 .DS_Store
-Thumbs.db
-ehthumbs.db
-Icon?
-desktop.ini
-
-# === Git ===
-*.orig
 *.swp
-*.swo
-*.bak
-
-# === Logs ===
-logs/
 *.log
+
+# =========================
+# Solution file
+# =========================
+# backend.sln can be committed

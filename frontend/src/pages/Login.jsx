@@ -1,13 +1,30 @@
 import { useState } from "react";
+import api from "../api/axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login", { email, password });
-    // Call your API here to login
+    setLoading(true);
+
+    try {
+      const res = await api.post("/auth/login", { email, password });
+      toast.success("Login successful!");
+      
+      // Redirect after short delay
+      setTimeout(() => navigate("/tasks"), 1500);
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -45,10 +62,14 @@ function Login() {
                 />
               </div>
 
-              <button type="submit" className="btn btn-primary w-100">
+              <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+                {loading ? (
+                  <span className="spinner-border spinner-border-sm me-2"></span>
+                ) : null}
                 Login
               </button>
             </form>
+
             <p className="mt-3 text-center">
               Don't have an account? <a href="/register">Register</a>
             </p>

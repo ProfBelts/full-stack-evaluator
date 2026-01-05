@@ -23,7 +23,20 @@ namespace TaskManager.Controllers
         public async Task<IActionResult> GetUsers()
         {
             var users = await _context.Users.Include(u => u.Tasks).ToListAsync();
-            return Ok(users);
+
+            var userDtos = users.Select(u => new UserResponseDto
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    Tasks = u.Tasks.Select(t => new TaskResponseDtoForUser
+                    {
+                        Id = t.Id,
+                        Title = t.Title,
+                        IsDone = t.IsDone
+                    }).ToList()
+                }).ToList();
+            
+            return Ok(userDtos);
         }
 
         // GET: api/users/1

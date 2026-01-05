@@ -5,6 +5,8 @@ namespace TaskManager.DTOs
     {
         public int Id { get; set; }
         public string Email { get; set; }
+        public List<TaskResponseDtoForUser> Tasks { get; set; } = new List<TaskResponseDtoForUser>();
+
 
     }
 }

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-
+using TaskManager.DTOs;
 using TaskManager.Models;
 using TaskManager.Data;
 namespace TaskManager.API
@@ -26,13 +26,39 @@ namespace TaskManager.API
             return Ok(tasks);
         }
 
+
+
+        // POST /api/tasks
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] TaskItem task)
+        public async Task<IActionResult> CreateTask([FromBody] TaskCreateDto dto)
         {
-            
+            var user = await _context.Users
+                             .Where(u => u.Id == dto.UserId)
+                             .Select(u => new { u.Id, u.Email })
+                             .FirstOrDefaultAsync();
+            if (user == null)
+                return BadRequest(new { message = "User not found" });
+
+            var task = new TaskItem
+            {
+                Title = dto.Title,
+                IsDone = dto.IsDone,
+                UserId = dto.UserId
+            };
+
             _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = task.Id }, task);
+
+           var response = new TaskResponseDto
+                {
+                    Id = task.Id,
+                    Title = task.Title,
+                    IsDone = task.IsDone,
+                    UserId = task.UserId,
+                    UserEmail = user.Email
+                };
+
+            return CreatedAtAction(nameof(Get), new { id = task.Id }, response);
         }
 
         [HttpPut("{id}")] 

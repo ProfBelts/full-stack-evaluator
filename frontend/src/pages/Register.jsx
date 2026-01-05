@@ -1,33 +1,30 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"; // <-- import toast
-import "react-toastify/dist/ReactToastify.css"; // <-- import CSS
 import api from "../api/axios";
+import { toast } from "react-toastify";
 
 function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false); // <-- track loading
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // start spinner
     try {
       const res = await api.post("/users", { email, password });
-      console.log(res.data);
-      
-      // Show success toast
-      toast.success("Registration successful!", {
-        position: "top-right",
-        autoClose: 2000, // 2 seconds
-        onClose: () => navigate("/login"), // redirect after toast closes
-      });
+      toast.success("Registration successful!");
 
+      // small delay for toast to show nicely
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.message || "Registration failed", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      toast.error(err.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false); // stop spinner
     }
   };
 
@@ -51,6 +48,7 @@ function Register() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  disabled={loading} // disable during loading
                 />
               </div>
 
@@ -63,13 +61,22 @@ function Register() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  disabled={loading} // disable during loading
                 />
               </div>
 
-              <button type="submit" className="btn btn-primary w-100">
-                Register
+              <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+                {loading ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Registering...
+                  </>
+                ) : (
+                  "Register"
+                )}
               </button>
             </form>
+
             <p className="mt-3 text-center">
               Already have an account? <a href="/login">Login</a>
             </p>

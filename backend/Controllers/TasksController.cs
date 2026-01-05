@@ -22,8 +22,20 @@ namespace TaskManager.API
         public async Task<IActionResult> Get()
         {
             
-            var tasks = await _context.Tasks.ToListAsync();
-            return Ok(tasks);
+            var tasks = await _context.Tasks
+                            .Include(t => t.User)
+                            .ToListAsync();            
+
+            var taskDto = tasks.Select(t => new TaskResponseDto
+            {
+                Id = t.Id, 
+                Title = t.Title,  
+                IsDone = t.IsDone, 
+                UserId = t.UserId, 
+                UserEmail = t.User?.Email
+            });
+
+            return Ok(taskDto);
         }
 
 
@@ -61,29 +73,34 @@ namespace TaskManager.API
             return CreatedAtAction(nameof(Get), new { id = task.Id }, response);
         }
 
-        [HttpPut("{id}")] 
-        public async Task<IActionResult> Update(int id, [FromBody] TaskItem updated)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] TaskUpdateDto dto)
         {
             var task = await _context.Tasks.FindAsync(id);
-            if (task == null) return NotFound();
+            if (task == null) 
+                return NotFound(new { message = "Task not found" });
 
-            task.Title = updated.Title;
-            task.IsDone = updated.IsDone;
+            // Update only the allowed fields
+            task.Title = dto.Title;
+            task.IsDone = dto.IsDone;
+
             await _context.SaveChangesAsync();
 
-            return Ok(task);
+            // Return a response DTO instead of entity
+            var response = new TaskResponseDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                IsDone = task.IsDone,
+                UserId = task.UserId,
+                UserEmail = (await _context.Users
+                                .Where(u => u.Id == task.UserId)
+                                .Select(u => u.Email)
+                                .FirstOrDefaultAsync())
+            };
+
+            return Ok(response);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var task = await _context.Tasks.FindAsync(id);
-            if (task == null) return NotFound();
-
-            _context.Tasks.Remove(task);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
     }
 }

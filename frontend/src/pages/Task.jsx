@@ -8,6 +8,8 @@ function Tasks() {
   const [isDone, setIsDone] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const user = JSON.parse(localStorage.getItem("user")); // { id, email }
+
 
   // Fetch tasks on page load
   const fetchTasks = async () => {
@@ -39,7 +41,7 @@ function Tasks() {
         toast.success("Task updated!");
       } else {
         // Create
-        await api.post("/tasks", { title, isDone, userId: 1 }); // replace 1 with logged-in user id if needed
+        await api.post("/tasks", { title, isDone, userId: user.id }); // replace 1 with logged-in user id if needed
         toast.success("Task created!");
       }
       setTitle("");

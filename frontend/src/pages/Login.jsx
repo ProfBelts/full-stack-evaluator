@@ -9,23 +9,21 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await api.post("/auth/login", { email, password });
+    // res.data contains { id, email }
+    localStorage.setItem("user", JSON.stringify(res.data)); // store user in localStorage
+    toast.success("Login successful!");
+    navigate("/tasks"); // redirect to tasks page
+  } catch (err) {
+    console.error(err);
+    toast.error(err.response?.data?.message || "Login failed");
+  }
+};
 
-    try {
-      const res = await api.post("/auth/login", { email, password });
-      toast.success("Login successful!");
-      
-      // Redirect after short delay
-      setTimeout(() => navigate("/tasks"), 1500);
-    } catch (err) {
-      console.error(err);
-      toast.error(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="container mt-5">
